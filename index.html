@@ -312,33 +312,37 @@ const STATUSES = [
 const SEED = [
   // ---------- SCHEDULED (next week) ----------
   { id:"p1", status:"scheduled", pillar:"BIP", date:"2026-06-16", time:"09:00",
-    title:"🦘 Some news: we're expanding Quokka Prints — and we've acquired GetMerch.com",
-    body:`Some news I'm still a little stunned to be writing.
+    title:"🦘 Some exciting news: we're expanding Quokka Prints (and bringing GetMerch.com into the family)",
+    body:`We started a merch company completely by accident.
 
-We're expanding Quokka Prints — and as part of that, we've acquired GetMerch.com. 🦘
+Today, that accident is getting a whole lot bigger. 🦘
+
+Some exciting news: we're expanding Quokka Prints — and bringing GetMerch.com into the family.
 
 Here's the honest story of how we got here.
 
-Quokka Prints started almost by accident. We were selling an energy drink in college (Quokka Brew), printed our own shirts and tents to stand out, and people kept asking us to make their merch instead. So we did.
+In college, we were selling an energy drink (Quokka Brew) and printed our own shirts and tents just to get noticed. People kept ignoring the drink and asking the same thing: "wait — who makes your merch?"
 
-It grew faster than we expected — festivals, marathons, PTAs, companies needing thousands of conference shirts. We loved the work. But we kept running into the limits of what we could offer on our own.
+So we started making it for them. That became Quokka Prints.
 
-GetMerch.com is the answer to that. It does, honestly, far more than we could alone:
+It grew faster than we ever planned — festivals, marathons, PTAs, companies needing thousands of conference shirts overnight. We loved it. But we kept hitting the ceiling of what we could pull off on our own.
+
+That's why we're bringing in GetMerch.com. It does, honestly, far more than we could alone:
 
 → 10,000+ products — shirts, hoodies, hats, tents, tumblers, even pickleball paddles
-→ Free custom design (or a Design Lab to mock it up yourself)
-→ Lowest price in the U.S., with a price-match guarantee
+→ An interactive design lab — create any custom item you can dream up and order it right from the site
+→ Lowest price in the U.S., price-match guaranteed
 → One order, one team, shipped to your door
 
-Bringing it into the family means our customers — festivals, PTAs, marathons, offices, artists — finally get one place that handles all of it, instead of five vendors and a week of email.
+For festivals, PTAs, marathons, offices and artists, it means one place that handles all of it — instead of five vendors and a week of email.
 
-We're not doing this to be bigger for its own sake. We're doing it because it's the thing we always wished existed for our own customers.
+We're not doing this to be bigger for the sake of it. We're doing it because it's the thing we always wished existed back when we were the ones ordering merch.
 
-Still very early, lots to build, and I'll be sharing the whole journey right here.
+Still early. Lots to build. I'll share the whole messy, fun journey right here.
 
-If you run merch for a team or an event — what's the one thing you wish was easier about it? 👇
+One question for you: if you could put your logo on ANY object on earth — what are you picking? 👇
 
-(Link in the comments 👇)` },
+(Link in the comments)` },
 
   { id:"p2", status:"scheduled", pillar:"CON", date:"2026-06-18", time:"09:00",
     title:"\"Pick a niche and never leave it\" is the worst advice I ever took seriously.",
@@ -625,7 +629,7 @@ If you could push one button and have ANY custom item show up at your door — w
 
 // Bump SEED_VERSION whenever the plan below changes so existing boards pull in
 // new posts automatically — without wiping the user's own edits.
-const SEED_VERSION = 3;
+const SEED_VERSION = 4;
 let DATA = load();
 
 function load(){
@@ -651,8 +655,8 @@ function migrate(data, fromVer){
   const ids = new Set(data.map(d=>d.id));
   // Add any new seed posts that aren't already on the board (preserves your edits).
   SEED.forEach(s=>{ if(!ids.has(s.id)) data.push(JSON.parse(JSON.stringify(s))); });
-  // v2/v3: keep the lead-off Jun 16 launch post in sync with the latest version.
-  if(fromVer < 3){
+  // v2-v4: keep the lead-off Jun 16 launch post in sync with the latest version.
+  if(fromVer < 4){
     const seedP1 = SEED.find(s=>s.id==="p1");
     const i = data.findIndex(d=>d.id==="p1");
     if(i>=0 && seedP1){ data[i].title=seedP1.title; data[i].body=seedP1.body; data[i].pillar=seedP1.pillar; }
