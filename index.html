@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ofek Arush — LinkedIn Thought Leadership Dashboard</title>
+<style>
+:root{ color-scheme: light; }
+*{ box-sizing:border-box; margin:0; padding:0; }
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:#f4f5f7; color:#1d2129; line-height:1.5; padding:0 0 60px;
+}
+.wrap{ max-width:1400px; margin:0 auto; padding:0 20px; }
+header.top{
+  background:linear-gradient(120deg,#f08a7a 0%,#e76f5e 100%);
+  color:#fff; padding:26px 0 22px; margin-bottom:18px;
+}
+header.top h1{ font-size:24px; font-weight:700; letter-spacing:-0.3px; }
+header.top p.sub{ font-size:14px; opacity:.95; margin-top:4px; }
+.principles{
+  display:flex; flex-wrap:wrap; gap:10px; margin-top:16px;
+}
+.principles .chip{
+  background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.35);
+  padding:6px 11px; border-radius:20px; font-size:12px; font-weight:500;
+}
+nav.tabs{ display:flex; gap:6px; margin-bottom:18px; flex-wrap:wrap; }
+nav.tabs button{
+  border:none; background:#e7e9ee; color:#444; padding:9px 16px; border-radius:8px;
+  font-size:14px; font-weight:600; cursor:pointer; transition:.15s;
+}
+nav.tabs button.active{ background:#1d2129; color:#fff; }
+.toolbar{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; align-items:center; }
+.toolbar button{
+  border:1px solid #d0d3da; background:#fff; color:#333; padding:7px 13px; border-radius:7px;
+  font-size:13px; font-weight:600; cursor:pointer;
+}
+.toolbar button:hover{ background:#f0f1f4; }
+.toolbar .spacer{ flex:1; }
+.toolbar .savednote{ font-size:12px; color:#5a8f4f; font-weight:600; }
+
+.board{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; align-items:start; }
+@media(max-width:1100px){ .board{ grid-template-columns:repeat(2,1fr);} }
+@media(max-width:680px){ .board{ grid-template-columns:1fr;} }
+.col{ background:#eceef1; border-radius:12px; padding:12px; min-height:120px; }
+.col h2{ font-size:13px; text-transform:uppercase; letter-spacing:.5px; color:#5b616e; margin-bottom:4px; display:flex; align-items:center; gap:6px; }
+.col .coldesc{ font-size:11px; color:#868c98; margin-bottom:10px; }
+.col .count{ background:#d6d9df; color:#555; border-radius:10px; padding:1px 8px; font-size:11px; }
+
+.card{
+  background:#fff; border-radius:10px; padding:12px; margin-bottom:11px;
+  box-shadow:0 1px 3px rgba(0,0,0,.08); border-left:4px solid #ccc;
+}
+.card .pill{ display:inline-block; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; padding:2px 8px; border-radius:20px; color:#fff; margin-bottom:8px; }
+.pill-BIP{ background:#e76f5e; } .pill-CON{ background:#3b7dd8; } .pill-MIND{ background:#7b5bd6; } .pill-TACT{ background:#2fa37a; }
+.card .title{ font-weight:700; font-size:14px; margin-bottom:7px; outline:none; }
+.card .title[contenteditable]:focus{ background:#fff7f5; }
+.card textarea{
+  width:100%; border:1px solid #e2e4e9; border-radius:7px; padding:8px; font-size:12.5px;
+  font-family:inherit; resize:vertical; min-height:54px; line-height:1.45; color:#2b2f36;
+}
+.card textarea.body{ min-height:120px; }
+.card .meta{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-top:8px; }
+.card .meta input[type=date], .card .meta input[type=time]{
+  border:1px solid #e2e4e9; border-radius:6px; padding:4px 6px; font-size:11.5px; font-family:inherit;
+}
+.charcount{ font-size:11px; color:#999; margin-top:3px; }
+.charcount.good{ color:#2fa37a; font-weight:600; }
+.charcount.over{ color:#e0563f; font-weight:600; }
+.btnrow{ display:flex; flex-wrap:wrap; gap:5px; margin-top:9px; }
+.btnrow button{
+  border:1px solid #d8dbe1; background:#fafbfc; border-radius:6px; padding:4px 9px;
+  font-size:11.5px; cursor:pointer; font-weight:600; color:#444;
+}
+.btnrow button:hover{ background:#eef0f3; }
+.btnrow button.copy{ background:#1d2129; color:#fff; border-color:#1d2129; }
+.btnrow button.del{ color:#c0392b; }
+.metrics{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:9px; padding-top:9px; border-top:1px dashed #e2e4e9; }
+.metrics label{ font-size:10px; color:#7b818d; display:block; text-transform:uppercase; letter-spacing:.3px; }
+.metrics input{ width:100%; border:1px solid #e2e4e9; border-radius:6px; padding:4px; font-size:12px; font-family:inherit; }
+.status48{ font-size:11px; font-weight:700; margin-top:8px; padding:5px 8px; border-radius:6px; text-align:center; }
+.tracking{ background:#fff4e0; color:#b9821f; }
+.final{ background:#e7f6ee; color:#1f8a55; }
+.engrate{ font-size:11px; color:#5b616e; margin-top:6px; text-align:center; }
+.addcard{
+  width:100%; border:2px dashed #c3c7cf; background:transparent; color:#6b7280;
+  padding:9px; border-radius:9px; font-size:12.5px; font-weight:600; cursor:pointer;
+}
+.addcard:hover{ background:#e3e6ea; }
+
+/* strategy tab */
+.panel{ display:none; }
+.panel.active{ display:block; }
+.sheet{ background:#fff; border-radius:12px; padding:22px 26px; margin-bottom:16px; box-shadow:0 1px 3px rgba(0,0,0,.06); }
+.sheet h3{ font-size:17px; margin-bottom:10px; color:#1d2129; }
+.sheet h4{ font-size:14px; margin:16px 0 6px; color:#e76f5e; text-transform:uppercase; letter-spacing:.5px; }
+.sheet p{ font-size:14px; margin-bottom:9px; color:#33373f; }
+.sheet ul{ margin:0 0 10px 20px; }
+.sheet li{ font-size:14px; margin-bottom:5px; }
+.example{ background:#f7f8fa; border-left:3px solid #3b7dd8; padding:11px 14px; border-radius:6px; margin:9px 0; font-size:13px; white-space:pre-wrap; }
+.example .lbl{ font-weight:700; color:#3b7dd8; display:block; margin-bottom:4px; font-size:11px; text-transform:uppercase; }
+.stat{ display:inline-block; background:#1d2129; color:#fff; border-radius:6px; padding:2px 9px; font-size:12px; font-weight:600; margin:2px 4px 2px 0; }
+table.cal{ width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+table.cal th, table.cal td{ border:1px solid #e6e8ec; padding:7px 9px; text-align:left; }
+table.cal th{ background:#f4f5f7; font-size:12px; text-transform:uppercase; letter-spacing:.3px; color:#5b616e; }
+.legend{ display:flex; gap:14px; flex-wrap:wrap; margin:8px 0 4px; font-size:12px; }
+.legend span{ display:flex; align-items:center; gap:5px; }
+.dot{ width:11px; height:11px; border-radius:3px; display:inline-block; }
+
+/* sign-in gate */
+#gate{
+  position:fixed; inset:0; background:linear-gradient(120deg,#f08a7a 0%,#e76f5e 100%);
+  display:flex; align-items:center; justify-content:center; z-index:9999;
+}
+#gate .box{
+  background:#fff; border-radius:16px; padding:34px 32px; width:380px; max-width:90vw;
+  box-shadow:0 20px 60px rgba(0,0,0,.25); text-align:center;
+}
+#gate .logo{ font-size:34px; }
+#gate h2{ font-size:20px; margin:10px 0 4px; color:#1d2129; }
+#gate p{ font-size:13px; color:#6b7280; margin-bottom:18px; }
+#gate input{
+  width:100%; border:1px solid #d8dbe1; border-radius:9px; padding:11px 12px; font-size:14px;
+  font-family:inherit; margin-bottom:10px;
+}
+#gate button{
+  width:100%; border:none; background:#e76f5e; color:#fff; padding:11px; border-radius:9px;
+  font-size:15px; font-weight:700; cursor:pointer;
+}
+#gate button:hover{ background:#d85f4e; }
+#gate .err{ color:#c0392b; font-size:12px; margin-top:8px; min-height:16px; }
+#gate .hint{ font-size:11px; color:#9aa0aa; margin-top:14px; }
+#whoami{ font-size:12px; color:#5b616e; font-weight:600; }
+</style>
+</head>
+<body>
+<div id="gate">
+  <div class="box">
+    <div class="logo">🦘</div>
+    <h2>GetMerch LinkedIn Command Center</h2>
+    <p>Sign in with your work email to open your dashboard.</p>
+    <input type="email" id="gateEmail" placeholder="you@quokkaprints.com" autocomplete="email" onkeydown="if(event.key==='Enter')signIn()">
+    <button onclick="signIn()">Sign in →</button>
+    <div class="err" id="gateErr"></div>
+    <div class="hint">Bookmark this page to come back anytime. Access: ofek@quokkaprints.com or george@quokkaprints.com</div>
+  </div>
+</div>
+<header class="top">
+  <div class="wrap">
+    <h1>Ofek Arush — LinkedIn Thought Leadership Command Center</h1>
+    <p class="sub">Building GetMerch in public · Contrarian startup lessons · Founder mindset &nbsp;|&nbsp; Built on the Justin Welsh Operating System + 2026 algorithm research</p>
+    <div class="principles">
+      <span class="chip">🎯 Hook in the first 3 lines</span>
+      <span class="chip">💬 Comments &gt; likes (15× weight)</span>
+      <span class="chip">⏱️ Win dwell time (aim 1,000–1,300 chars)</span>
+      <span class="chip">⚡ Be polarizing, never boring</span>
+      <span class="chip">📖 Teach through stories</span>
+      <span class="chip">🗓️ Tue–Thu, ~9am ET</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="tabs">
+    <button data-tab="board" class="active">📋 Content Board</button>
+    <button data-tab="strategy">📚 Strategy &amp; Playbook</button>
+    <button data-tab="help">ℹ️ How to use</button>
+  </nav>
+
+  <!-- BOARD -->
+  <div class="panel active" id="panel-board">
+    <div class="toolbar">
+      <button onclick="addCard('idea')">+ Idea</button>
+      <button onclick="addCard('draft')">+ Draft</button>
+      <div class="spacer"></div>
+      <span id="whoami"></span>
+      <button onclick="signOut()">Sign out</button>
+      <span class="savednote" id="savednote">Auto-saved ✓</span>
+      <button onclick="exportData()">⬇ Export backup</button>
+      <button onclick="document.getElementById('importfile').click()">⬆ Import</button>
+      <input type="file" id="importfile" accept="application/json" style="display:none" onchange="importData(event)">
+      <button onclick="resetData()" style="color:#c0392b">↺ Reset to plan</button>
+    </div>
+    <div class="board" id="board"></div>
+  </div>
+
+  <!-- STRATEGY -->
+  <div class="panel" id="panel-strategy">
+    <div class="sheet">
+      <h3>The 4 Content Pillars</h3>
+      <div class="legend">
+        <span><i class="dot" style="background:#e76f5e"></i> BIP — Building GetMerch in Public</span>
+        <span><i class="dot" style="background:#3b7dd8"></i> CON — Contrarian Startup Lessons</span>
+        <span><i class="dot" style="background:#7b5bd6"></i> MIND — Founder Mindset</span>
+        <span><i class="dot" style="background:#2fa37a"></i> TACT — Merch / Ecommerce Tactics</span>
+      </div>
+      <p><b>BIP</b> — the real, unfiltered journey of Quokka Brew → Quokka Prints → GetMerch. Numbers, decisions, behind-the-scenes, the unglamorous truth. This is your relatability engine.</p>
+      <p><b>CON</b> — strong, polarizing opinions about startups, bootstrapping, niching, and "best practices." People either agree hard or disagree hard — both drive comments.</p>
+      <p><b>MIND</b> — your spirituality/present-moment philosophy applied to founder life (straight from your note). The "supportive observer filter," problems-as-lessons, the deathbed reframe. This pillar builds genuine connection.</p>
+      <p><b>TACT</b> — teach how custom merch / ecommerce actually works. Positions you as THE expert in the space and pulls in buyers.</p>
+    </div>
+
+    <div class="sheet">
+      <h3>The Justin Welsh Operating System — distilled</h3>
+
+      <h4>Trait 1 — Backstory (be relatable, not untouchable)</h4>
+      <p>Your audience joins your journey when they see themselves in you. Every great backstory has 7 beats:</p>
+      <ul>
+        <li><b>The obstacle</b> (relatable) → <b>internal struggle</b> → <b>external struggle</b> → <b>change event</b> → <b>the spark</b> → <b>the guide</b> → <b>the result</b>.</li>
+      </ul>
+      <div class="example"><span class="lbl">Justin Welsh's viral backstory post — 14,200 reactions, 828 comments</span>I got FIRED 3 times before I was 28.
+I NEVER hit quota in my first 4 sales jobs.
+At 28, I took a job as one of the first salespeople at a tech company in NYC.
+I moved to NYC and was paid $40k as I turned 29.
+I slept on my friend Mara's couch for 5 months.
+...The intersection of finding a product, team, culture and city I freaking LOVED.
+I worked NON-STOP. I won every award possible. I got promoted 5 times.
+By 33 I became an Executive.
+I look back and cannot remember the old me.</div>
+      <p><b>Your version:</b> selling Quokka Brew dorm-to-dorm → customers asking who made your merch → Quokka Prints → outgrowing it → GetMerch. The obstacle/anxiety/"failed businesses" beats are your gold.</p>
+
+      <h4>Trait 2 — Polarization (suss out your strong opinions)</h4>
+      <p>Boring = no engagement. Write things people will either strongly agree or strongly disagree with. Nobody is indifferent. Use absolutes ("never," "dead," "always") to stop the scroll.</p>
+      <div class="example"><span class="lbl">Example — the "Resumes are dead" post</span>Resumes are dead.
+Your online presence is your new resume.
+It doesn't matter whether you believe it or not. It's the truth.
+And what you produce online is the ultimate look into who you are...
+An online presence requires daily work. It's tough to fake that.
+A resume? An hour. Anyone can do that.</div>
+      <div class="example"><span class="lbl">Example — create vs. consume — 3,851 reactions · 421 comments · 317,298 views</span>Stop bragging to everyone that you read 25 books a year. Publish one.
+Stop telling everyone about the podcasts you listen to. Record one.
+Stop spouting off everything you read in blogs. Write one.
+There's no reward for the most consumption. Creation? That's a different story.</div>
+      <p><b>~80% will love it, ~20% will push back.</b> That's the point — the 20% were never your community.</p>
+
+      <h4>Trait 3 — Stories (turn lessons into short stories)</h4>
+      <p>People don't remember facts. They remember stories. Take a common lesson in your niche and dramatize it with a real moment.</p>
+      <div class="example"><span class="lbl">The legendary "$130 treadmill" story</span>"I paid a guy $130 to move my treadmill in 30 minutes."
+Told me he had 8 moves that day. Do the math.
+Have you ever made $1,040 in one day?
+Everyone wants entrepreneurship to be fancy. Sometimes it's just moving treadmills.</div>
+      <p><b>Your versions:</b> "I spent an hour sourcing an inflatable flamingo," "a festival ordered 5,000 shirts in 48 hours," "the customer email that said 'I don't want five vendors, I want one button.'"</p>
+
+      <h4>Copywriting — Stop. Read. Participate.</h4>
+      <ul>
+        <li><b>The Trailer (first 3 lines):</b> break the scroll. The reader commits or bails after line 3 (before "see more"). Put a space between lines.</li>
+        <li><b>The Meat:</b> teach, show, or suggest the actual value.</li>
+        <li><b>The Summary / question:</b> end with a question that's easy to answer so people comment.</li>
+      </ul>
+    </div>
+
+    <div class="sheet">
+      <h3>2026 LinkedIn Algorithm — what actually moves reach</h3>
+      <p>
+        <span class="stat">Dwell time = #1 signal</span>
+        <span class="stat">Comments = 15× a like</span>
+        <span class="stat">Comments 15+ words = 2.5× weight</span>
+        <span class="stat">Sweet spot 1,000–1,300 chars</span>
+      </p>
+      <ul>
+        <li>The first 3 lines must earn the "see more" click — without it, dwell time never accumulates.</li>
+        <li>LinkedIn tests each post on 2–5% of your network first. Strong early engagement (first 60 min) decides wider reach. Only ~5% of slow-starting posts ever recover.</li>
+        <li><b>Reply to every comment in the first hour</b> — it doubles comment weight and signals quality. Tell your audience when you post so they show up.</li>
+        <li>A link in the post body drops reach ~60%. Put links in the first comment instead.</li>
+        <li>Document carousels (PDF) and short vertical video (30–90s, captioned) get the biggest format boosts right now.</li>
+        <li>"Great post!" comments are now treated as noise — encourage real replies with a real question.</li>
+        <li>Your headline / About / Experience affect post reach — which is exactly why we're adding GetMerch to your profile.</li>
+      </ul>
+    </div>
+
+    <div class="sheet">
+      <h3>Posting cadence — the 4-week ramp</h3>
+      <p>Start at 2 posts/week and build the habit, then ramp to 4/week. Best window: <b>Tuesday–Thursday, ~9:00am ET</b>, then block 9–10am to reply to comments.</p>
+      <table class="cal">
+        <tr><th>Week</th><th>Posts</th><th>Days</th></tr>
+        <tr><td>Week 1 (Jun 15–19)</td><td>2</td><td>Tue, Thu</td></tr>
+        <tr><td>Week 2 (Jun 22–26)</td><td>3</td><td>Tue, Wed, Thu</td></tr>
+        <tr><td>Week 3 (Jun 29–Jul 3)</td><td>4</td><td>Mon, Tue, Wed, Thu</td></tr>
+        <tr><td>Week 4 (Jul 6–10)</td><td>4</td><td>Mon, Tue, Wed, Thu</td></tr>
+      </table>
+      <p style="margin-top:10px;font-size:13px;color:#7b818d">Rotate pillars so the feed never feels repetitive: e.g. BIP → CON → MIND → TACT.</p>
+    </div>
+  </div>
+
+  <!-- HELP -->
+  <div class="panel" id="panel-help">
+    <div class="sheet">
+      <h3>How to use this dashboard</h3>
+      <ul>
+        <li><b>Four columns = four stages.</b> <b>Ideas</b> (raw concepts) → <b>Drafts</b> (written, needs your edit/approval) → <b>Scheduled</b> (locked for next week with a date) → <b>Posted</b> (live, tracking metrics).</li>
+        <li><b>Edit anything inline.</b> Click any title or body text and type. Changes auto-save to this browser instantly.</li>
+        <li><b>Move a card</b> with the ◀ / ▶ buttons to push it to the next stage.</li>
+        <li><b>Copy</b> grabs the full post text so you can paste it straight into LinkedIn.</li>
+        <li><b>When you post:</b> move the card to Posted and hit "Mark posted now." A 48-hour tracker starts. Enter views / likes / comments anytime; after 48h the card flips to <b>FINAL</b> and the numbers are locked-in as the official result.</li>
+        <li><b>Export backup</b> saves everything to a JSON file. <b>Import</b> restores it (useful across devices, since data lives in this browser).</li>
+        <li><b>Nothing posts automatically.</b> I never publish to LinkedIn without your explicit go-ahead.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+const PILLARS = { BIP:"Build in Public", CON:"Contrarian", MIND:"Mindset", TACT:"Tactical" };
+const STATUSES = [
+  { key:"idea",     title:"💡 Ideas",     desc:"Raw concepts to develop" },
+  { key:"draft",    title:"✍️ Drafts",    desc:"Written — edit & approve" },
+  { key:"scheduled",title:"🗓️ Scheduled", desc:"Locked for next week" },
+  { key:"posted",   title:"🚀 Posted",    desc:"Live — tracking 48h metrics" }
+];
+
+const SEED = [
+  // ---------- SCHEDULED (next week) ----------
+  { id:"p1", status:"scheduled", pillar:"BIP", date:"2026-06-16", time:"09:00",
+    title:"🦘 LAUNCH POST — After 5 years of quietly building, today it finally gets a name: GetMerch.com",
+    body:`Okay. Deep breath. I've started three companies and somehow never actually announced one.
+
+Today I'm fixing that. 🦘
+
+Meet GetMerch.com — the thing I've been quietly building for years.
+
+Here's the slightly ridiculous story of how we got here:
+
+It started with an energy drink.
+
+We made Quokka Brew — a jitter-free energy drink — and sold it dorm-to-dorm in college. To stand out, we printed our own shirts, hats and tents.
+
+People kept ignoring the drink and asking: "wait… who makes your merch?"
+
+So we started making merch for them. That became Quokka Prints.
+
+Then the orders got wild. A music festival. A marathon. A PTA bake sale. A tech company that needed 5,000 conference shirts in 48 hours. One client asked for a custom inflatable flamingo. (Reader, we made the flamingo.)
+
+Quokka Prints couldn't keep up. So we rebuilt the whole thing from scratch into something bigger:
+
+GetMerch.com 🎉
+→ 10,000+ products (shirts, hoodies, tents, tumblers, pickleball paddles… flamingos)
+→ Free custom design
+→ Lowest price in the U.S., guaranteed
+→ One order, one team, shipped to your door
+
+The whole bet: ordering custom merch should be fun and easy — not five vendors and a week of email.
+
+We're just getting started, and I'm going to build it in public right here — the wins, the flamingos, the 2am-before-doors chaos, all of it.
+
+So tell me: if you could put your logo on ANY object on earth, what are you picking? 👇
+
+(Link in the comments 👇)` },
+
+  { id:"p2", status:"scheduled", pillar:"CON", date:"2026-06-18", time:"09:00",
+    title:"\"Pick a niche and never leave it\" is the worst advice I ever took seriously.",
+    body:`"Pick a niche and stay in it forever" is the worst advice I ever took seriously.
+
+I almost killed three businesses trying to follow it.
+
+We started as an energy drink company. Pure focus. Stay in your lane, the experts said.
+
+Then customers kept asking us to print their logos on shirts and cups. "Not our niche," I told myself. We're a beverage company.
+
+I said no for months.
+
+Eventually I got tired of leaving money on the table and said yes. That "distraction" became Quokka Prints — and then GetMerch.com, now bigger than the drink ever was.
+
+Here's what nobody tells you about niching down:
+
+A niche is a great place to START. It's a terrible place to get STUCK.
+
+The goal isn't to defend your lane. It's to follow your customers when they hand you a bigger one.
+
+Focus is a tool, not a religion.
+
+Where in your business are you saying "that's not our niche" — when it might actually be your next one?` },
+
+  // ---------- DRAFTS ----------
+  { id:"p3", status:"draft", pillar:"MIND", date:"2026-06-23", time:"09:00",
+    title:"I used to punish myself every time I found a smart solution.",
+    body:`I used to punish myself every time I found a smart solution.
+
+I'd discover a better way to run something and immediately think: "Idiot. Why didn't you do this a year ago?"
+
+For years I thought that was discipline. It was just self-harm with extra steps.
+
+Then it hit me: no company started perfect. Not one. Every system you admire exists because someone hit a wall, learned, and fixed it — later than they'd have liked.
+
+That's not failure. That's the entire game.
+
+So I made one change. Now when I find a better way, I don't say "I should've known this sooner."
+
+I say: "Good. I just upgraded the company."
+
+Same fact. Opposite feeling. And I'm not bleeding the energy I need for the actual work.
+
+You are not behind. You're playing a long game that rewards people who keep correcting course without hating themselves for needing to.
+
+What's a "mistake" you're still beating yourself up over that was actually just you learning?` },
+
+  { id:"p4", status:"draft", pillar:"TACT", date:"2026-06-24", time:"09:00",
+    title:"Most companies overpay for their merch by 30–40%. Three reasons why.",
+    body:`Most companies overpay for their merch by 30–40%.
+
+I've seen the invoices. After years in this business, it's almost always the same three mistakes:
+
+1. They order through a middleman's middleman.
+Your branded hoodie often passes through 3–4 markups before it reaches you. Every hand in the chain takes a cut. You pay for all of them.
+
+2. They pay for "design" that should be free.
+Getting charged $75/hour to drop a logo on a template is a scam the industry has normalized. Good partners design for free and make it back on the order.
+
+3. They never ask about the blank.
+The same printed shirt can cost $9 or $19 depending on the blank underneath it. Most buyers never ask. The good ones always do.
+
+None of this is complicated. It's just hidden — because the markup lives in the parts you don't think to question.
+
+Cheaper merch isn't about negotiating harder. It's about removing the hands between you and the press.
+
+If you order merch for your company: what's the most you've ever paid for a single t-shirt?` },
+
+  { id:"p5", status:"draft", pillar:"BIP", date:"2026-06-25", time:"09:00",
+    title:"We almost didn't build GetMerch. One customer email changed our minds.",
+    body:`We almost didn't build GetMerch.
+
+Quokka Prints was working. Orders were steady. Building something bigger felt like greed.
+
+Then a customer sent an email I still think about.
+
+She ran merch for a 12,000-person music festival. She'd spent two weeks emailing five different vendors to get quotes on shirts, tents, lanyards and tote bags. Five vendors. Five threads. Five invoices. Five things that could go wrong at 2am before doors.
+
+Her last line: "I don't want five vendors. I want one button."
+
+That was the whole company.
+
+Not "cheaper shirts." Not "better hoodies." One person, drowning in logistics, who just wanted someone to handle all of it.
+
+So we stopped thinking of ourselves as a print shop and started building the "one button" — 10,000+ products, one designer, one order, one team that handles the rest.
+
+The best product ideas don't sound like products. They sound like a tired customer venting.
+
+What's a complaint you keep hearing from your customers? That might be your roadmap.` },
+
+  { id:"p6", status:"draft", pillar:"CON", date:"2026-06-29", time:"09:00",
+    title:"Everyone told us to raise money. We bootstrapped three companies instead.",
+    body:`Everyone told us to raise money.
+
+We bootstrapped three companies instead. Here's the part nobody mentions:
+
+Bootstrapping didn't just keep us lean. It changed what we were allowed to build.
+
+When you raise, the clock starts. You owe someone a 10x return, which means you have to chase the biggest possible version of the idea — fast — whether or not it's the right one.
+
+When you bootstrap, your only investor is the customer. The only way to get "funded" is to make something people pay for this month.
+
+That sounds limiting. It's actually a cheat code. It forced us to find real revenue before we found a real problem — and that order kept us alive when funded competitors burned out.
+
+I'm not anti-VC. For some businesses it's exactly right.
+
+But the myth that you NEED it to start has killed more good companies than running out of money ever did.
+
+The best first investor is a customer with a credit card.
+
+Founders: if money were off the table, what would you build differently starting tomorrow?` },
+
+  { id:"p7", status:"draft", pillar:"MIND", date:"2026-06-30", time:"09:00",
+    title:"My goofy, carefree attitude is my biggest competitive advantage. I almost let my business strangle it.",
+    body:`My goofy, carefree attitude is the most valuable asset I own.
+
+And I almost let my own business strangle it.
+
+There was a stretch where I woke up already clenched. Every problem felt like a threat. I was running the company well and enjoying none of it. I'd become a stressed person who happened to own a fun brand.
+
+Then I asked an uncomfortable question: if the version of me that built this company disappears, what exactly am I protecting?
+
+The energy. The lightness. The willingness to build a brand about jitter-free fun and inflatable flamingos — that was never separate from the business. It WAS the business.
+
+So I made it a rule: my company doesn't get to take the part of me that made the company worth building.
+
+Now I treat a bad day as one rough chapter in a long, interesting story — not proof the sky is falling.
+
+Stress isn't a tax you must pay to be taken seriously. It's a habit. And habits can change.
+
+Founders: what's one part of "you" your business has quietly eaten that you want back?` },
+
+  { id:"p8", status:"draft", pillar:"TACT", date:"2026-07-01", time:"09:00",
+    title:"A festival ordered 5,000 shirts from us with 48 hours' notice. Here's how custom merch actually gets made.",
+    body:`A festival once ordered 5,000 custom shirts from us with 48 hours' notice.
+
+We delivered. Here's what actually happens behind a merch order — the part nobody sees:
+
+Hour 0: Art comes in. Half the time it's a screenshot, a napkin sketch, or a logo that's way too low-res to print. Step one is quietly fixing files the customer doesn't know are broken.
+
+Hour 2: We pick the blank. This is the real decision. The same design feels premium or cheap entirely based on the shirt underneath it.
+
+Hour 6: Screens get burned, colors mixed to match the brand exactly, a test print pulled and inspected under real light.
+
+Hour 12–40: Print, cure, quality-check, fold, box. Thousands of times. The romance is gone. It's pure execution.
+
+Hour 47: It ships.
+
+People think custom merch is a creative business. It's 10% creative and 90% logistics performed under a deadline.
+
+The magic isn't the design. It's the boring stuff done flawlessly at scale.
+
+What's a business you assumed was "creative" that's secretly all logistics?` },
+
+  { id:"p9", status:"draft", pillar:"BIP", date:"2026-07-02", time:"09:00",
+    title:"The unglamorous truth about building GetMerch: yesterday I spent an hour sourcing an inflatable flamingo.",
+    body:`The unglamorous truth about building GetMerch:
+
+Yesterday I spent a full hour sourcing a custom inflatable flamingo for a client.
+
+Not strategy. Not fundraising. Not a keynote.
+
+A flamingo.
+
+Everyone wants entrepreneurship to look like the highlight reel — the visionary, the big raise, the magazine cover.
+
+Most of it is not that.
+
+Most of it is: a customer needs a weird thing, by a real date, at a price that works. And the entire business is just being the person who reliably gets that weird thing done.
+
+We've made pink cowgirl hats for a festival. Custom pashminas. Pickleball paddles. 5,000 lanyards overnight. And yes, the flamingo.
+
+None of it is glamorous. All of it pays the bills, builds the reputation, and earns the next, bigger order.
+
+If you're waiting for your business to feel fancy before you take it seriously — you'll wait forever.
+
+Sometimes building an empire is just sourcing the flamingo, today, better than anyone else would.
+
+What's the least glamorous task you did this week that actually moved your business forward?` },
+
+  { id:"p10", status:"draft", pillar:"CON", date:"2026-07-06", time:"09:00",
+    title:"Your resume is dead. For founders, your last 10 posts are the new resume.",
+    body:`Your resume is dead.
+
+Especially if you're a founder. Nobody is checking your GPA or your job titles. They're reading your last 10 posts and your DMs.
+
+I learned this the hard way. For years I had a polished profile and said nothing. Crickets. No inbound. No partners. No press.
+
+Then I started writing — honestly, about the actual mess of building Quokka Brew, Quokka Prints and GetMerch.
+
+Within months: customers found me, vendors found me, people I'd cold-emailed for a year suddenly replied "oh, I follow you."
+
+Nothing about my "qualifications" changed. Only my visibility did.
+
+Here's the uncomfortable truth: a quiet expert and a non-expert look exactly the same from the outside. Identical. The only proof the world has that you know something is that you said it out loud, in public, consistently.
+
+Your reputation is no longer a document you submit. It's a body of work you publish.
+
+You don't need permission. You need a post.
+
+What's stopped you from posting more — time, fear of judgment, or not knowing what to say?` },
+
+  { id:"p11", status:"draft", pillar:"MIND", date:"2026-07-07", time:"09:00",
+    title:"Imagine being on your deathbed, furious that you let a stressful Tuesday steal a good day.",
+    body:`Imagine being on your deathbed.
+
+Now imagine being furious — not about the big things, but that you let a thousand stressful Tuesdays steal days you could have actually enjoyed.
+
+That image changed how I run my company.
+
+I used to treat every problem like an emergency. A vendor flaked. A shipment was late. A number dipped. My whole nervous system would light up like the building was on fire.
+
+Then I started asking one question in the moment: "Will I care about this in 24 hours? In 10 years?"
+
+Almost always, no.
+
+Most "problems" in a business aren't fires. They're weather. They pass. And the version of you that stayed calm makes far better decisions than the one that panicked.
+
+You can't control most of what happens to your company. You can control whether you torch a good day reacting to it.
+
+Running a startup is a once-in-a-lifetime experience — the ups AND the downs. You only get to build this thing for the first time once.
+
+What's one thing stressing you out today that you genuinely won't remember next month?` },
+
+  { id:"p12", status:"draft", pillar:"TACT", date:"2026-07-08", time:"09:00",
+    title:"PTAs, marathons, conferences, festivals. They all want the same 4 things from a merch partner.",
+    body:`I've made merch for PTAs, marathons, conferences, music festivals and tech offices.
+
+On the surface, nothing in common. A bake sale and a 12,000-person festival could not look more different.
+
+But underneath, every single one wants the exact same 4 things:
+
+1. Make me look good in front of my people.
+The PTA mom and the festival director both have an audience judging the merch. It's never "just a shirt." It's their reputation on someone's chest.
+
+2. Don't make me become an expert.
+They don't want to learn blanks, GSM, or print methods. They want to describe the vibe and have a pro handle it.
+
+3. Hit the date. No exceptions.
+Race day doesn't move. Doors don't move. "Late" isn't a delay, it's a disaster.
+
+4. Don't make me feel stupid about price.
+Not just cheap — fair. They want to trust they weren't quietly overcharged.
+
+Different budgets, same human needs.
+
+Whatever you sell, your customers are more alike than your market segments suggest. Solve the human need and the segments take care of themselves.
+
+What are the 4 things YOUR customers actually want, underneath what they say they want?` },
+
+  { id:"p13", status:"draft", pillar:"BIP", date:"2026-07-09", time:"09:00",
+    title:"In 5 years, ordering custom merch should feel like ordering an Uber. That's what we're building.",
+    body:`In 5 years, ordering custom merch should feel like ordering an Uber.
+
+You open an app. You say what you want. It shows up. You never think about the machinery behind it.
+
+That's the company we're actually building with GetMerch — and we're not there yet. I'll say that plainly.
+
+Today, getting custom merch made is still too much like booking travel in 1995. Call around. Compare quotes. Hope the vendor is good. Wait. Worry.
+
+It shouldn't be. There's no reason a PTA mom should need three phone calls and a week of email to put a logo on 200 shirts.
+
+So here's the bet we've made: the winner in merch won't be whoever has the coolest designs. It'll be whoever removes the most friction, fear and waiting from the experience.
+
+Lowest price. Free design. 10,000 products. One button. Shows up at your door.
+
+We're a few years and a lot of unglamorous work away. But that's the direction every decision points.
+
+If you could push one button and have ANY custom item show up at your door — what's the first thing you'd order?` },
+
+  // ---------- IDEAS ----------
+  { id:"i1", status:"idea", pillar:"TACT", date:"", time:"", title:"The $19 t-shirt that should've cost $9 — a live pricing teardown", body:`Break down a real (anonymized) overpriced merch quote line by line and show where the markup hides. Highly shareable, positions you as the honest expert.` },
+  { id:"i2", status:"idea", pillar:"BIP", date:"", time:"", title:"Why we give away design for free (and still make money)", body:`Contrarian + behind-the-scenes. Explains the GetMerch model and reframes "free" as a smarter business decision, not charity.` },
+  { id:"i3", status:"idea", pillar:"BIP", date:"", time:"", title:"What running an energy drink company taught me about merch", body:`Bridge your two worlds. Lessons from Quokka Brew (distribution, branding, hustle) that unexpectedly transferred to GetMerch.` },
+  { id:"i4", status:"idea", pillar:"BIP", date:"", time:"", title:"The Quokka Brew campus playbook: into 100+ stores with no budget", body:`Tactical war story. The mass-email-the-clubs growth hack from your own notes. Gives the audience something they can copy.` },
+  { id:"i5", status:"idea", pillar:"CON", date:"", time:"", title:"\"Lowest price guarantee\" is a promise most companies are too scared to make", body:`Contrarian take on pricing confidence + a flex on the GetMerch model. Invites debate.` },
+  { id:"i6", status:"idea", pillar:"MIND", date:"", time:"", title:"The wristband trick I use to snap out of a stress spiral", body:`Straight from your note — the "snap out of it" pillar. Practical, vulnerable, mindset content.` },
+  { id:"i7", status:"idea", pillar:"BIP", date:"", time:"", title:"The merch order that went horribly wrong (and what it taught us)", body:`A failure story. Vulnerability + lesson. Failure stories outperform wins on LinkedIn.` },
+  { id:"i8", status:"idea", pillar:"MIND", date:"", time:"", title:"You forgive others for yourself, not for them — running a company taught me this", body:`From your note. Applies a spirituality pillar to dealing with difficult partners/vendors/employees.` },
+  { id:"i9", status:"idea", pillar:"TACT", date:"", time:"", title:"Document carousel: 7 merch mistakes that make your brand look cheap", body:`Format experiment — PDF carousel (highest-engagement format in 2026). Repurpose the pricing + blank lessons visually.` },
+  { id:"i10", status:"idea", pillar:"BIP", date:"", time:"", title:"\"Your customers can see your next business before you can\" (origin-story follow-up)", body:`Post-launch follow-up to go deeper on the Quokka Brew → Prints → GetMerch thread. Angle: every pivot came from listening to what customers pulled us toward, not the plan we wrote down. Good for week 3 once people know GetMerch exists.` }
+];
+
+// Bump SEED_VERSION whenever the plan below changes so existing boards pull in
+// new posts automatically — without wiping the user's own edits.
+const SEED_VERSION = 2;
+let DATA = load();
+
+function load(){
+  try{
+    const raw = localStorage.getItem("gm_li_dashboard_v1");
+    const ver = +(localStorage.getItem("gm_li_dashboard_ver")||0);
+    if(raw){
+      let data = JSON.parse(raw);
+      if(ver < SEED_VERSION){
+        data = migrate(data, ver);
+        localStorage.setItem("gm_li_dashboard_v1", JSON.stringify(data));
+        localStorage.setItem("gm_li_dashboard_ver", String(SEED_VERSION));
+      }
+      return data;
+    }
+  }catch(e){}
+  localStorage.setItem("gm_li_dashboard_ver", String(SEED_VERSION));
+  return JSON.parse(JSON.stringify(SEED));
+}
+
+// Merge newer plan content into an existing board.
+function migrate(data, fromVer){
+  const ids = new Set(data.map(d=>d.id));
+  // Add any new seed posts that aren't already on the board (preserves your edits).
+  SEED.forEach(s=>{ if(!ids.has(s.id)) data.push(JSON.parse(JSON.stringify(s))); });
+  // v2: install the GetMerch launch post as the lead-off Jun 16 post.
+  if(fromVer < 2){
+    const seedP1 = SEED.find(s=>s.id==="p1");
+    const i = data.findIndex(d=>d.id==="p1");
+    if(i>=0 && seedP1){ data[i].title=seedP1.title; data[i].body=seedP1.body; data[i].pillar=seedP1.pillar; }
+  }
+  return data;
+}
+function save(){
+  localStorage.setItem("gm_li_dashboard_v1", JSON.stringify(DATA));
+  const n = document.getElementById("savednote");
+  n.textContent = "Saved ✓ " + new Date().toLocaleTimeString();
+  n.style.opacity = 1;
+  clearTimeout(window._st);
+  window._st = setTimeout(()=>{ n.textContent="Auto-saved ✓"; }, 1500);
+}
+
+function esc(s){ return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function render(){
+  const board = document.getElementById("board");
+  board.innerHTML = "";
+  STATUSES.forEach(st=>{
+    const items = DATA.filter(d=>d.status===st.key);
+    const col = document.createElement("div");
+    col.className = "col";
+    col.innerHTML = `<h2>${st.title} <span class="count">${items.length}</span></h2><div class="coldesc">${st.desc}</div>`;
+    items.forEach(item=> col.appendChild(cardEl(item)) );
+    const add = document.createElement("button");
+    add.className = "addcard";
+    add.textContent = "+ Add card";
+    add.onclick = ()=> addCard(st.key);
+    col.appendChild(add);
+    board.appendChild(col);
+  });
+}
+
+function cardEl(item){
+  const idx = STATUSES.findIndex(s=>s.key===item.status);
+  const c = document.createElement("div");
+  c.className = "card";
+  c.style.borderLeftColor = ({BIP:"#e76f5e",CON:"#3b7dd8",MIND:"#7b5bd6",TACT:"#2fa37a"})[item.pillar]||"#ccc";
+
+  // pillar selector
+  const pillarSel = `<select onchange="setField('${item.id}','pillar',this.value)" class="pill pill-${item.pillar}" style="border:none;cursor:pointer;-webkit-appearance:none;appearance:none">
+    ${Object.keys(PILLARS).map(k=>`<option value="${k}" ${k===item.pillar?"selected":""}>${k} · ${PILLARS[k]}</option>`).join("")}
+  </select>`;
+
+  let html = pillarSel;
+  html += `<div class="title" contenteditable="true" onblur="setField('${item.id}','title',this.innerText)">${esc(item.title)}</div>`;
+  html += `<textarea class="body" oninput="setField('${item.id}','body',this.value);updchars(this)" onkeyup="updchars(this)">${esc(item.body)}</textarea>`;
+  html += `<div class="charcount"></div>`;
+
+  // date/time for draft & scheduled
+  if(item.status==="draft" || item.status==="scheduled"){
+    html += `<div class="meta">
+      <input type="date" value="${item.date||""}" onchange="setField('${item.id}','date',this.value)">
+      <input type="time" value="${item.time||""}" onchange="setField('${item.id}','time',this.value)">
+    </div>`;
+  }
+
+  // posted metrics
+  if(item.status==="posted"){
+    const m = item.metrics||{views:"",likes:"",comments:""};
+    html += `<div class="metrics">
+      <div><label>Views</label><input type="number" value="${m.views||""}" oninput="setMetric('${item.id}','views',this.value)"></div>
+      <div><label>Likes</label><input type="number" value="${m.likes||""}" oninput="setMetric('${item.id}','likes',this.value)"></div>
+      <div><label>Comments</label><input type="number" value="${m.comments||""}" oninput="setMetric('${item.id}','comments',this.value)"></div>
+    </div>`;
+    html += `<div class="engrate" id="eng-${item.id}"></div>`;
+    if(!item.postedAt){
+      html += `<div class="btnrow"><button onclick="markPostedNow('${item.id}')">⏱ Mark posted now</button></div>`;
+    }
+    html += `<div class="status48" id="s48-${item.id}"></div>`;
+  }
+
+  // button row
+  html += `<div class="btnrow">
+    <button class="copy" onclick="copyPost('${item.id}')">📋 Copy</button>
+    ${idx>0?`<button onclick="move('${item.id}',-1)">◀ ${STATUSES[idx-1].title.replace(/^[^ ]+ /,"")}</button>`:""}
+    ${idx<STATUSES.length-1?`<button onclick="move('${item.id}',1)">${STATUSES[idx+1].title.replace(/^[^ ]+ /,"")} ▶</button>`:""}
+    <button class="del" onclick="delCard('${item.id}')">🗑</button>
+  </div>`;
+
+  c.innerHTML = html;
+  // init char count + 48h
+  setTimeout(()=>{
+    const ta = c.querySelector("textarea.body"); if(ta) updchars(ta);
+    if(item.status==="posted") refresh48(item.id);
+  },0);
+  return c;
+}
+
+function updchars(ta){
+  const cc = ta.parentElement.querySelector(".charcount");
+  if(!cc) return;
+  const n = ta.value.length;
+  let cls="", note="";
+  if(n>=900 && n<=1300){ cls="good"; note=" ✓ in the 2026 sweet spot"; }
+  else if(n>1300){ cls="over"; note=" — a bit long, trim toward 1,300"; }
+  else { note=" — aim for 900–1,300"; }
+  cc.className = "charcount "+cls;
+  cc.textContent = n + " characters" + note;
+}
+
+function setField(id,field,val){
+  const d = DATA.find(x=>x.id===id); if(!d) return;
+  d[field]=val; save();
+  if(field==="pillar") render();
+}
+function setMetric(id,key,val){
+  const d = DATA.find(x=>x.id===id); if(!d) return;
+  d.metrics = d.metrics||{}; d.metrics[key]=val; save();
+  const eng = document.getElementById("eng-"+id);
+  if(eng){ const m=d.metrics; const v=+m.views; if(v>0){ eng.textContent="Engagement rate: "+(((+m.likes+ +m.comments)/v*100).toFixed(2))+"%"; } else eng.textContent=""; }
+}
+function markPostedNow(id){
+  const d = DATA.find(x=>x.id===id); if(!d) return;
+  d.postedAt = Date.now(); save(); render();
+}
+function refresh48(id){
+  const d = DATA.find(x=>x.id===id); if(!d) return;
+  const el = document.getElementById("s48-"+id); if(!el) return;
+  if(!d.postedAt){ el.textContent=""; el.className="status48"; return; }
+  const hrs = (Date.now()-d.postedAt)/3600000;
+  if(hrs<48){
+    const left = Math.ceil(48-hrs);
+    el.className="status48 tracking";
+    el.textContent = "⏱ Tracking — "+left+"h until final";
+  } else {
+    el.className="status48 final";
+    el.textContent = "✓ FINAL — metrics locked ("+new Date(d.postedAt).toLocaleDateString()+")";
+  }
+  const eng = document.getElementById("eng-"+id);
+  if(eng && d.metrics){ const v=+d.metrics.views; if(v>0){ eng.textContent="Engagement rate: "+(((+d.metrics.likes+ +d.metrics.comments)/v*100).toFixed(2))+"%"; } }
+}
+setInterval(()=>{ DATA.filter(d=>d.status==="posted").forEach(d=>refresh48(d.id)); }, 60000);
+
+function move(id,dir){
+  const d = DATA.find(x=>x.id===id); if(!d) return;
+  const idx = STATUSES.findIndex(s=>s.key===d.status);
+  const ni = idx+dir;
+  if(ni<0||ni>=STATUSES.length) return;
+  d.status = STATUSES[ni].key;
+  if(d.status==="posted" && !d.metrics) d.metrics={views:"",likes:"",comments:""};
+  save(); render();
+}
+function delCard(id){
+  if(!confirm("Delete this card?")) return;
+  DATA = DATA.filter(x=>x.id!==id); save(); render();
+}
+function addCard(status){
+  const id = "n"+Date.now();
+  DATA.unshift({ id, status, pillar:"BIP", date:"", time:"", title:"New post — write your hook here", body:"", metrics:(status==="posted"?{views:"",likes:"",comments:""}:undefined) });
+  save(); render();
+}
+function copyPost(id){
+  const d = DATA.find(x=>x.id===id); if(!d) return;
+  const text = d.title + "\n\n" + d.body;
+  navigator.clipboard.writeText(text).then(()=>{
+    const n=document.getElementById("savednote"); n.textContent="Copied to clipboard ✓";
+    setTimeout(()=>n.textContent="Auto-saved ✓",1500);
+  });
+}
+function exportData(){
+  const blob = new Blob([JSON.stringify(DATA,null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download="getmerch-linkedin-dashboard.json"; a.click();
+}
+function importData(e){
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{ try{ DATA=JSON.parse(r.result); save(); render(); }catch(err){ alert("Could not read that file."); } };
+  r.readAsText(f);
+}
+function resetData(){
+  if(!confirm("Reset the board back to the original 1-month plan? Your edits will be lost (export a backup first if you want to keep them).")) return;
+  DATA = JSON.parse(JSON.stringify(SEED)); save(); render();
+}
+
+// tabs
+document.querySelectorAll("nav.tabs button").forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll("nav.tabs button").forEach(x=>x.classList.remove("active"));
+    document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    document.getElementById("panel-"+b.dataset.tab).classList.add("active");
+  };
+});
+
+// ---- email sign-in gate (lightweight access lock for this bookmarked page) ----
+const ALLOWED = ["ofek@quokkaprints.com","george@quokkaprints.com"];
+function checkAuth(){
+  const who = (localStorage.getItem("gm_li_auth")||"").toLowerCase();
+  if(ALLOWED.includes(who)){
+    document.getElementById("gate").style.display="none";
+    document.getElementById("whoami").textContent = "Signed in: "+who;
+  } else {
+    document.getElementById("gate").style.display="flex";
+    document.getElementById("whoami").textContent = "";
+  }
+}
+function signIn(){
+  const v = (document.getElementById("gateEmail").value||"").trim().toLowerCase();
+  if(ALLOWED.includes(v)){ localStorage.setItem("gm_li_auth", v); document.getElementById("gateErr").textContent=""; checkAuth(); }
+  else { document.getElementById("gateErr").textContent = "That email isn't on the access list. Use ofek@ or george@quokkaprints.com."; }
+}
+function signOut(){ localStorage.removeItem("gm_li_auth"); checkAuth(); }
+
+render();
+checkAuth();
+</script>
+</body>
+</html>
