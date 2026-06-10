@@ -312,38 +312,31 @@ const STATUSES = [
 const SEED = [
   // ---------- SCHEDULED (next week) ----------
   { id:"p1", status:"scheduled", pillar:"BIP", date:"2026-06-16", time:"09:00",
-    title:"🦘 LAUNCH POST — After 5 years of quietly building, today it finally gets a name: GetMerch.com",
-    body:`Okay. Deep breath. I've started three companies and somehow never actually announced one.
+    title:"🦘 Some news: we're expanding Quokka Prints — and we've acquired GetMerch.com",
+    body:`Some news I'm still a little stunned to be writing.
 
-Today I'm fixing that. 🦘
+We're expanding Quokka Prints — and as part of that, we've acquired GetMerch.com. 🦘
 
-Meet GetMerch.com — the thing I've been quietly building for years.
+Here's the honest story of how we got here.
 
-Here's the slightly ridiculous story of how we got here:
+Quokka Prints started almost by accident. We were selling an energy drink in college (Quokka Brew), printed our own shirts and tents to stand out, and people kept asking us to make their merch instead. So we did.
 
-It started with an energy drink.
+It grew faster than we expected — festivals, marathons, PTAs, companies needing thousands of conference shirts. We loved the work. But we kept running into the limits of what we could offer on our own.
 
-We made Quokka Brew — a jitter-free energy drink — and sold it dorm-to-dorm in college. To stand out, we printed our own shirts, hats and tents.
+GetMerch.com is the answer to that. It does, honestly, far more than we could alone:
 
-People kept ignoring the drink and asking: "wait… who makes your merch?"
-
-So we started making merch for them. That became Quokka Prints.
-
-Then the orders got wild. A music festival. A marathon. A PTA bake sale. A tech company that needed 5,000 conference shirts in 48 hours. One client asked for a custom inflatable flamingo. (Reader, we made the flamingo.)
-
-Quokka Prints couldn't keep up. So we rebuilt the whole thing from scratch into something bigger:
-
-GetMerch.com 🎉
-→ 10,000+ products (shirts, hoodies, tents, tumblers, pickleball paddles… flamingos)
-→ Free custom design
-→ Lowest price in the U.S., guaranteed
+→ 10,000+ products — shirts, hoodies, hats, tents, tumblers, even pickleball paddles
+→ Free custom design (or a Design Lab to mock it up yourself)
+→ Lowest price in the U.S., with a price-match guarantee
 → One order, one team, shipped to your door
 
-The whole bet: ordering custom merch should be fun and easy — not five vendors and a week of email.
+Bringing it into the family means our customers — festivals, PTAs, marathons, offices, artists — finally get one place that handles all of it, instead of five vendors and a week of email.
 
-We're just getting started, and I'm going to build it in public right here — the wins, the flamingos, the 2am-before-doors chaos, all of it.
+We're not doing this to be bigger for its own sake. We're doing it because it's the thing we always wished existed for our own customers.
 
-So tell me: if you could put your logo on ANY object on earth, what are you picking? 👇
+Still very early, lots to build, and I'll be sharing the whole journey right here.
+
+If you run merch for a team or an event — what's the one thing you wish was easier about it? 👇
 
 (Link in the comments 👇)` },
 
@@ -632,7 +625,7 @@ If you could push one button and have ANY custom item show up at your door — w
 
 // Bump SEED_VERSION whenever the plan below changes so existing boards pull in
 // new posts automatically — without wiping the user's own edits.
-const SEED_VERSION = 2;
+const SEED_VERSION = 3;
 let DATA = load();
 
 function load(){
@@ -658,8 +651,8 @@ function migrate(data, fromVer){
   const ids = new Set(data.map(d=>d.id));
   // Add any new seed posts that aren't already on the board (preserves your edits).
   SEED.forEach(s=>{ if(!ids.has(s.id)) data.push(JSON.parse(JSON.stringify(s))); });
-  // v2: install the GetMerch launch post as the lead-off Jun 16 post.
-  if(fromVer < 2){
+  // v2/v3: keep the lead-off Jun 16 launch post in sync with the latest version.
+  if(fromVer < 3){
     const seedP1 = SEED.find(s=>s.id==="p1");
     const i = data.findIndex(d=>d.id==="p1");
     if(i>=0 && seedP1){ data[i].title=seedP1.title; data[i].body=seedP1.body; data[i].pillar=seedP1.pillar; }
